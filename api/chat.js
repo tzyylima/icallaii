@@ -1,13 +1,15 @@
 export default async function handler(req, res) {
   if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
+    return res.status(405).json({ error: { message: "Method not allowed" } });
   }
 
   try {
     const { message } = req.body;
 
     if (!message) {
-      return res.status(400).json({ error: "Message kosong" });
+      return res.status(400).json({
+        error: { message: "Message kosong" }
+      });
     }
 
     const response = await fetch(
@@ -23,8 +25,14 @@ export default async function handler(req, res) {
         body: JSON.stringify({
           model: "openai/gpt-4o-mini",
           messages: [
-            { role: "system", content: "Kamu adalah icallAI, AI yang ramah." },
-            { role: "user", content: message }
+            {
+              role: "system",
+              content: "Kamu adalah icallAI, AI yang ramah dan membantu."
+            },
+            {
+              role: "user",
+              content: message
+            }
           ]
         })
       }
@@ -41,6 +49,8 @@ export default async function handler(req, res) {
     });
 
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({
+      error: { message: err.message }
+    });
   }
 }
